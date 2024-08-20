@@ -21,7 +21,7 @@ func init() {
 		path = "data.json"
 	}
 
-	staff, err = reader.ReadJSON(path, -1)
+	staff, err = reader.ReadJSON(path)
 
 	fmt.Print(err)
 
