@@ -1,11 +1,13 @@
 package reader
 
-import "encoding/json"
-import "fmt"
-import "io"
-import "os"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
 
-import "github.com/fixme_my_friend/hw02_fix_app/types"
+	"github.com/fixme_my_friend/hw02_fix_app/types"
+)
 
 func ReadJSON(filePath string, limit int) ([]types.Employee, error) {
 	f, err := os.Open(filePath)
