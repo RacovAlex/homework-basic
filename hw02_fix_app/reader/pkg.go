@@ -12,21 +12,19 @@ import (
 func ReadJSON(filePath string) ([]types.Employee, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
-		fmt.Printf("Error: %v", err)
+		return nil, fmt.Errorf("error opening file: %v", err)
 	}
 
 	bytes, err := io.ReadAll(f)
 	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return nil, nil
+		return nil, fmt.Errorf("error reading file: %v", err)
 	}
 
 	var data []types.Employee
 
 	err = json.Unmarshal(bytes, &data)
 	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return nil, nil
+		return nil, fmt.Errorf("error unmarshalling json: %v", err)
 	}
 
 	res := data
