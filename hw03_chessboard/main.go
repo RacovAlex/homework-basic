@@ -27,7 +27,6 @@ func chessBoard(s int) string {
 }
 
 func main() {
-
 	// Считываем целое число от пользователя - размер стороны доски
 	fmt.Println("Введи целое число от 1 до 200:")
 	var size int
