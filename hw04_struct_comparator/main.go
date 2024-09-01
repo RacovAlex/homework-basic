@@ -11,12 +11,24 @@ type Book struct {
 	rate   float32
 }
 
-// enum компараторов
+// NewBook является конструктором для Book.
+func NewBook(id int, title string, author string, year int, size int, rate float32) *Book {
+	return &Book{
+		id:     id,
+		title:  title,
+		author: author,
+		year:   year,
+		size:   size,
+		rate:   rate,
+	}
+}
 
-type Comparator int
+// режим сравнения для компаратора
+
+type Compare int
 
 const (
-	CompareByYear Comparator = iota
+	CompareByYear Compare = iota
 	CompareBySize
 	CompareByRate
 )
@@ -24,7 +36,12 @@ const (
 // BookComparator структура, наверное, не лучшее решение,
 // лучше реализовать при помощи интерфесов, но мы пока их не проходили.
 type BookComparator struct {
-	comparator Comparator
+	comparator Compare
+}
+
+// NewBookComparator - конструктор для BookComparator.
+func NewBookComparator(comparator Compare) *BookComparator {
+	return &BookComparator{comparator}
 }
 
 // Compare позволяет сравнивать две структуры Book по заданному
@@ -96,14 +113,13 @@ func (b *Book) SetRate(rate float32) {
 }
 
 func main() {
-	AnnaKarenina := Book{
-		id:     1,
-		title:  "Анна Каренина",
-		author: "Лев Толстой",
-		year:   1878,
-		size:   1124,
-		rate:   4.75,
-	}
+	AnnaKarenina := NewBook(
+		1,
+		"Анна Каренина",
+		"Лев Толстой",
+		1878,
+		1124,
+		4.75)
 
 	MartinIden := Book{
 		id:     2,
@@ -114,8 +130,8 @@ func main() {
 		rate:   4.60,
 	}
 
-	bookComparator := BookComparator{comparator: CompareByRate}
-	fmt.Println(bookComparator.Compare(AnnaKarenina, MartinIden))
+	bookComparator := NewBookComparator(CompareByRate)
+	fmt.Println(bookComparator.Compare(*AnnaKarenina, MartinIden))
 
-	fmt.Println(BookComparator{comparator: CompareByYear}.Compare(AnnaKarenina, MartinIden))
+	fmt.Println(NewBookComparator(CompareByYear).Compare(*AnnaKarenina, MartinIden))
 }
