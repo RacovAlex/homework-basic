@@ -30,7 +30,7 @@ func (c Circle) Area() float32 {
 	return math.Pi * c.Radius * c.Radius
 }
 
-// Triangle - фигура треугольника с основанием и высотой
+// Triangle - фигура треугольника с основанием и высотой.
 type Triangle struct {
 	Base, Height float32
 }
