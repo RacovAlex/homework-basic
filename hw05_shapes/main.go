@@ -4,40 +4,33 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/homework-basic/hw05_shapes/figures"
+	"github.com/homework-basic/hw05_shapes/figure"
 )
 
-// Shape интерфейс описывает фигуры, у которых можно вычесть их площадь.
-type Shape interface {
-	Area() float32
-}
-
 func main() {
-	PrintFigureWithArea(5)
+	shapes := []any{
+		figure.NewRectangle(10, 5),
+		figure.NewCircle(5),
+		figure.NewTriangle(8, 6),
+		5,
+	}
+
+	for _, shape := range shapes {
+		area, err := CalculateArea(shape)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		fmt.Printf("%s Площадь: %f\n", shape, area)
+	}
 }
 
 // CalculateArea ожидает на входе интерфейс Shape и вычисляет площадь
 // фигуры, реализующей данный интерфейс.
 func CalculateArea(a any) (float32, error) {
-	figure, ok := a.(Shape)
+	shape, ok := a.(figure.Shape)
 	if !ok {
 		return 0, errors.New("ошибка: переданный объект не является фигурой")
 	}
-	return figure.Area(), nil
-}
-
-func PrintFigureWithArea(a any) {
-	area, err := CalculateArea(a)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	switch a := a.(type) {
-	case *figures.Circle:
-		fmt.Printf("Круг: радиус %f Площадь: %f\n", a.Radius, area)
-	case *figures.Rectangle:
-		fmt.Printf("Прямоугольник: ширина %f, высота %f Площадь: %f\n", a.Width, a.Height, area)
-	case *figures.Triangle:
-		fmt.Printf("Треугольник: основание %f, высота %f Площадь: %f\n", a.Base, a.Height, area)
-	}
+	return shape.Area(), nil
 }
