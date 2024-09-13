@@ -1,6 +1,11 @@
 package figure
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrNegativeHeightWidth = errors.New("высота или ширина не может быть отрицательной")
 
 // Rectangle - фигура прямоугольника с шириной и высотой.
 type Rectangle struct {
@@ -16,6 +21,9 @@ func NewRectangle(width, height float32) Shape {
 
 // Area - метод вычисляющий площадь прямоугольника.
 func (r *Rectangle) Area() (float32, error) {
+	if r.width < 0 || r.height < 0 {
+		return 0, ErrNegativeHeightWidth
+	}
 	return r.width * r.height, nil
 }
 

@@ -1,11 +1,11 @@
 package figure
 
 import (
-	"errors"
 	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCircle_Area(t *testing.T) {
@@ -31,16 +31,17 @@ func TestCircle_Area(t *testing.T) {
 			desc: "negative radius",
 			fig:  Circle{-1},
 			want: 0.0,
-			err:  errors.New("радиус не может быть отрицательным"),
+			err:  ErrNegativeRadius,
 		},
 	}
-	for _, tC := range testCases {
-		t.Run(tC.desc, func(t *testing.T) {
-			got, err := tC.fig.Area()
-			if err != nil {
-				assert.EqualError(t, err, tC.err.Error())
-			}
-			assert.Equal(t, tC.want, got)
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			got, err := tc.fig.Area()
+			//	if err != nil {
+			//		assert.EqualError(t, err, tc.err.Error())
+			//	}
+			require.ErrorIs(t, err, tc.err)
+			assert.Equal(t, tc.want, got)
 		})
 	}
 }
