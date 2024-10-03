@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package entity;
+
+// Определение сообщения Book
+message ProtoBook {
+  int32 id = 1;
+  string title = 2;
+  string author = 3;
+  int32 year = 4;
+  int32 size = 5;
+  double rate = 6;
+}
+
+// Указание go_package для генерации Go-кода
+option go_package = "github.com/homework-basic/hw09_serialize/entity;entity";
