@@ -6,12 +6,12 @@ import (
 )
 
 type Book struct {
-	ID     int
-	Title  string
-	Author string
-	Year   int
-	Size   int
-	Rate   float64
+	ID     int     `json:"id"`
+	Title  string  `json:"title"`
+	Author string  `json:"author"`
+	Year   int     `json:"year"`
+	Size   int     `json:"size"`
+	Rate   float64 `json:"rate"`
 }
 
 func (b *Book) MarshalJSON() ([]byte, error) {
@@ -20,43 +20,14 @@ func (b *Book) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 
-	temp := struct {
-		ID     int     `json:"id"`
-		Title  string  `json:"title"`
-		Author string  `json:"author"`
-		Year   int     `json:"year"`
-		Size   int     `json:"size"`
-		Rate   float64 `json:"rate"`
-	}{
-		ID:     b.ID,
-		Title:  b.Title,
-		Author: b.Author,
-		Year:   b.Year,
-		Size:   b.Size,
-		Rate:   b.Rate,
-	}
-	j, err := json.Marshal(temp)
-	if err != nil {
-		return nil, fmt.Errorf("book marshaling: %w", err)
-	}
-
-	return j, nil
+	return json.Marshal(*b)
 }
 
-func (b *Book) UnmarshalJSON(j []byte) error {
-	if len(j) == 0 {
-		return fmt.Errorf("cannot unmarshal empty JSON")
-	}
-	temp := struct {
-		ID     int     `json:"id"`
-		Title  string  `json:"title"`
-		Author string  `json:"author"`
-		Year   int     `json:"year"`
-		Size   int     `json:"size"`
-		Rate   float64 `json:"rate"`
-	}{}
+func (b *Book) UnmarshalJSON(data []byte) error {
+	type Alias Book
+	temp := &Alias{}
 
-	err := json.Unmarshal(j, &temp)
+	err := json.Unmarshal(data, temp)
 	if err != nil {
 		return fmt.Errorf("book unmarshalling: %w", err)
 	}
@@ -66,13 +37,7 @@ func (b *Book) UnmarshalJSON(j []byte) error {
 		return err
 	}
 
-	b.ID = temp.ID
-	b.Title = temp.Title
-	b.Author = temp.Author
-	b.Year = temp.Year
-	b.Size = temp.Size
-	b.Rate = temp.Rate
-
+	*b = Book(*temp)
 	return nil
 }
 
