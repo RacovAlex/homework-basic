@@ -15,7 +15,7 @@ type Book struct {
 }
 
 func (b *Book) MarshalJSON() ([]byte, error) {
-	err := validStruct(b.Year, b.Size, b.Rate)
+	err := validateBook(b)
 	if err != nil {
 		return nil, err
 	}
@@ -32,56 +32,27 @@ func (b *Book) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("book unmarshalling: %w", err)
 	}
 
-	err = validStruct(temp.Year, temp.Size, temp.Rate)
+	*b = Book(*temp)
+
+	err = validateBook(b)
 	if err != nil {
 		return err
 	}
 
-	*b = Book(*temp)
 	return nil
 }
 
-func validStruct(year, size int, rate float64) error {
-	if year <= 0 {
-		return fmt.Errorf("invalid year: %d", year)
+func validateBook(b *Book) error {
+	if b.Year <= 0 {
+		return fmt.Errorf("invalid year: %d", b.Year)
 	}
-	if size <= 0 {
-		return fmt.Errorf("invalid size: %d", size)
+	if b.Size <= 0 {
+		return fmt.Errorf("invalid size: %d", b.Size)
 	}
-	if rate < 0 || rate > 5 {
-		return fmt.Errorf("rate should be from 0 to 5: %f", rate)
+	if b.Rate < 0 || b.Rate > 5 {
+		return fmt.Errorf("rate should be from 0 to 5: %f", b.Rate)
 	}
 	return nil
-}
-
-// Фиг поймешь надо сериализовать весь слайс объектов или иметь слайс
-// сериализованных объектов. На всякий случай пишу оба варианта.
-
-// Сериализация и десериализация массива объектов в массив JSON объектов
-
-func SliceToBytesMarshalJSON(s []*Book) ([][]byte, error) {
-	sliceJSON := make([][]byte, 0, len(s))
-	for _, v := range s {
-		j, err := v.MarshalJSON()
-		if err != nil {
-			return nil, fmt.Errorf("marshal json slice: %w", err)
-		}
-		sliceJSON = append(sliceJSON, j)
-	}
-	return sliceJSON, nil
-}
-
-func SliceFromBytesUnmarshalJSON(s [][]byte) ([]*Book, error) {
-	sliceBook := make([]*Book, 0, len(s))
-	for _, v := range s {
-		var book Book
-		err := book.UnmarshalJSON(v)
-		if err != nil {
-			return nil, fmt.Errorf("unmarshal json slice: %w", err)
-		}
-		sliceBook = append(sliceBook, &book)
-	}
-	return sliceBook, nil
 }
 
 // Сериализация и десериализация в единый JSON массив
